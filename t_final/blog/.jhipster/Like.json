@@ -1,0 +1,23 @@
+{
+  "applications": "*",
+  "changelogDate": "20231110163431",
+  "entityTableName": "jhi_like",
+  "fields": [
+    {
+      "fieldName": "isliked",
+      "fieldType": "Boolean",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "name": "Like",
+  "relationships": [
+    {
+      "otherEntityField": "title",
+      "otherEntityName": "post",
+      "relationshipName": "post",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "searchEngine": "no"
+}

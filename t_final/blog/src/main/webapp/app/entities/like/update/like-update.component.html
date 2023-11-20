@@ -1,0 +1,50 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2 id="jhi-like-heading" data-cy="LikeCreateUpdateHeading">Create or edit a Like</h2>
+
+      <div>
+        <jhi-alert-error></jhi-alert-error>
+
+        <div class="mb-3" *ngIf="editForm.controls.id.value !== null">
+          <label class="form-label" for="field_id">ID</label>
+          <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_isliked">Isliked</label>
+          <input type="checkbox" class="form-check" name="isliked" id="field_isliked" data-cy="isliked" formControlName="isliked" />
+          <div *ngIf="editForm.get('isliked')!.invalid && (editForm.get('isliked')!.dirty || editForm.get('isliked')!.touched)">
+            <small class="form-text text-danger" *ngIf="editForm.get('isliked')?.errors?.required"
+              >required</small
+            >
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_post">Post</label>
+          <select class="form-control" id="field_post" data-cy="post" name="post" formControlName="post" [compareWith]="comparePost">
+            <option [ngValue]="null"></option>
+            <option [ngValue]="postOption" *ngFor="let postOption of postsSharedCollection">{{ postOption.title }}</option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span>cancel</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span>save</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

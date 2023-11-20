@@ -1,0 +1,51 @@
+services:
+  blog:
+    image: blog
+    environment:
+      - _JAVA_OPTIONS=-Xmx512m -Xms256m
+      - SPRING_PROFILES_ACTIVE=prod,api-docs
+      - MANAGEMENT_PROMETHEUS_METRICS_EXPORT_ENABLED=true
+      - SPRING_DATASOURCE_URL=jdbc:mysql://blog-mysql:3306/blog?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&createDatabaseIfNotExist=true
+      - SPRING_LIQUIBASE_URL=jdbc:mysql://blog-mysql:3306/blog?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&createDatabaseIfNotExist=true
+    ports:
+      - '8080:8080'
+    healthcheck:
+      test:
+        - CMD
+        - curl
+        - '-f'
+        - http://localhost:8080/management/health
+      interval: 5s
+      timeout: 5s
+      retries: 40
+    depends_on:
+      blog-mysql:
+        condition: service_healthy
+  blog-mysql:
+    image: mysql:8.2.0
+    volumes:
+      - ./config/mysql:/etc/mysql/conf.d
+    environment:
+      - MYSQL_USER=root
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+      - MYSQL_DATABASE=blog
+    command: mysqld --lower_case_table_names=1 --skip-ssl --character_set_server=utf8mb4 --explicit_defaults_for_timestamp
+    healthcheck:
+      test:
+        - CMD
+        - mysql
+        - '-e'
+        - SHOW DATABASES;
+      interval: 5s
+      timeout: 5s
+      retries: 10
+  frontend:
+    image: blog
+    restart: always
+    ports:
+      - 9000:80
+    depends_on:
+      - blog:
+          condition: service_healthy
+    # volumes:
+    #   - ./target/static:/usr/share/nginx/html

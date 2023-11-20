@@ -1,0 +1,89 @@
+<div>
+  <h2 id="page-heading" data-cy="LikeHeading">
+    <span>Likes</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
+        <span>Refresh list</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-like"
+        [routerLink]="['/like/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span>Create a new Like</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error></jhi-alert-error>
+
+  <jhi-alert></jhi-alert>
+
+  <div class="alert alert-warning" id="no-result" *ngIf="likes?.length === 0">
+    <span>No Likes found</span>
+  </div>
+
+  <div class="table-responsive table-entities" id="entities" *ngIf="likes && likes.length > 0">
+    <table class="table table-striped" aria-describedby="page-heading">
+      <thead>
+        <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="navigateToWithComponentValues()">
+          <th scope="col" jhiSortBy="id">
+            <div class="d-flex">
+              <span>Id</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="isliked">
+            <div class="d-flex">
+              <span>Isliked</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="post.title">
+            <div class="d-flex">
+              <span>Post</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let like of likes; trackBy: trackId" data-cy="entityTable">
+          <td>
+            <a [routerLink]="['/like', like.id, 'view']">{{ like.id }}</a>
+          </td>
+          <td>{{ like.isliked }}</td>
+          <td>
+            <div *ngIf="like.post">
+              <a [routerLink]="['/post', like.post.id, 'view']">{{ like.post.title }}</a>
+            </div>
+          </td>
+          <td class="text-end">
+            <div class="btn-group">
+              <a [routerLink]="['/like', like.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
+                <fa-icon icon="eye"></fa-icon>
+                <span class="d-none d-md-inline">view</span>
+              </a>
+
+              <a [routerLink]="['/like', like.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton">
+                <fa-icon icon="pencil-alt"></fa-icon>
+                <span class="d-none d-md-inline">edit</span>
+              </a>
+
+              <button type="submit" (click)="delete(like)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                <fa-icon icon="times"></fa-icon>
+                <span class="d-none d-md-inline">delete</span>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
