@@ -1,0 +1,61 @@
+application {
+  config {
+    baseName blog
+    applicationType monolith
+    packageName ar.edu.um.isa.blog
+    buildTool maven,
+    devDatabaseType mysql,
+    prodDatabaseType mysql,
+    authenticationType jwt,
+    testFrameworks [cypress],
+    clientTheme sketchy,
+    languages [es,en],
+    nativeLanguage es,
+    enableSwaggerCodegen true
+  }
+  entities *
+}
+
+//entity User {
+//  username String required minlength(8)
+//  password String required minlength(8)
+//}
+
+entity Blog {
+  name String required minlength(3)
+  handle String required minlength(2)
+}
+
+entity Post {
+  title String required
+  content TextBlob required
+  date Instant required
+}
+
+entity Tag {
+  name String required minlength(2)
+}
+
+entity Comment {
+  user String required
+  content String required maxlength(200)
+}
+
+entity Notification {
+  message String required
+  date Instant required
+}
+
+relationship ManyToOne {
+  Blog{user(login)} to User with builtInEntity
+  Post{blog(name)} to Blog
+  Comment{user(login)} to User with builtInEntity
+  Post{comment} to Comment
+}
+
+relationship ManyToMany {
+  Post{tag(name)} to Tag{entry}
+  Notification to User{notification} with builtInEntity
+}
+
+paginate Post, Tag with infinite-scroll

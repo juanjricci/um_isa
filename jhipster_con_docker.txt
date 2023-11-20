@@ -1,0 +1,10 @@
+Comandos para correr jhipster en docker:
+
+Corremos el container:
+$docker container exec -it jhipster bash
+
+Para correr como usuario root:
+$docker container exec -it --user root jhipster bash
+
+$cd /home/jhipster/app
+$jhipster
